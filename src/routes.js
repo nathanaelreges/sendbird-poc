@@ -6,14 +6,13 @@ module.exports = (server) => {
     res.send('Hello World')
   })
 
-
-  server.post('/webhook', function(req, res) {
+  server.post('/poc-chat/webhook', function(req, res) {
     chat.handle(req.body)
     res.sendStatus(200)
     console.log(req.body)
   })
 
-  server.get('/channels', function (req, res) {
+  server.get('/poc-chat/channels', function (req, res) {
     res.json(chat.getChannels())
   })
 }

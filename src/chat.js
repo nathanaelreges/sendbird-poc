@@ -16,15 +16,14 @@ const categoryHandlers = {
 
     const entry = {
       userId: sender.user_id,
-      nickname: sender.nickmane,
+      nickname: sender.nickname,
       channelUrl: channel.channel_url,
-      lastMessage: payload.messsage
+      lastMessage: payload.message
     };
 
     activeChannels.put(entry)
   }
 }
-
 
 module.exports = {
   handle(body) {
