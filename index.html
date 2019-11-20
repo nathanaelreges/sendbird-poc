@@ -7,70 +7,115 @@
   <title>poc-chat admin</title>
 
   <style>
-    body { margin: 0; background: #E9EBEE; }
+    body {
+      margin: 0;
+      background: #E9EBEE;
+    }
   </style>
 </head>
 
 <body>
   <form>
     <div id="radio-container">
-      <input type="radio" id="contactChoice1" name="contact" value="email">
-      <label for="contactChoice1">Email</label>
-      <input type="radio" id="contactChoice2" name="contact" value="phone">
-      <label for="contactChoice2">Phone</label>
-      <input type="radio" id="contactChoice3" name="contact" value="mail">
-      <label for="contactChoice3">Mail</label>
     </div>
 
-      <input type="text" name="message">
-      <button type="submit">Submit</button>
+    <input type="text" name="message">
+    <button type="submit">Submit</button>
   </form>
 </body>
 
 <script>
-init()
+  init()
 
-async function init () {
-  let channels = await get("/poc-chat/channels");
-  const radioContainer = document.querySelector('#radio-container')
+  async function init() {
+    let channels = await get("/poc-chat/channels");
+    const radioContainerEl = document.querySelector('#radio-container')
+    const formEl = document.querySelector('form')
 
-  Object.keys(channels).map(channel => {
-    const data = channels[channel];
+    Object.keys(channels).map(channel => {
+      const data = channels[channel];
 
-    const ele = newEle(`
-      <input type="radio" id="user-${data.user_id}" name="channel" value="${channel}">
-      <label for="user-${data.user_id}">${data.nickname}</label>
-    `);
+      const ele = newEle(`<div>
+        <input type="radio" id="user-${data.user_id}" name="channelUrl" value="${channel}">
+        <label for="user-${data.user_id}">${data.nickname} - ${data.lastMessage}</label>
+      </div>`);
 
-    radioContainer.appendChild(ele)
-  })
-}
-
-
-
-function newEle (html) {
-  var div = document.createElement('div')
-  div.innerHTML = html
-  return div.firstElementChild
-}
-
-function get(path) {
-  var xhr = new XMLHttpRequest();
-
-  const promise = new Promise(r => {
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        r(JSON.parse(this.responseText));
-        console.log(this.responseText);
-      }
+      radioContainerEl.appendChild(ele)
     })
-  })
 
-  xhr.open("GET", path);
-  xhr.send();
+    formEl.addEventListener("submit", function (event) {
+      const formData = getFormData(formEl);
 
-  return promise;
-}
+      event.preventDefault();
+
+      if (!formData.channelUrl) {
+        alert('Escolha um usuario')
+        return
+      }
+
+      post("/poc-chat/send_message", formData)
+    },
+      false
+    );
+
+
+  }
+
+
+  function getFormData(formEl) {
+    var output = {};
+    var data = new FormData(formEl);
+
+    for (const entry of data) {
+      output[entry[0]] = entry[1];
+    };
+
+    return output;
+  }
+
+  function newEle(html) {
+    var div = document.createElement('div')
+    div.innerHTML = html
+    return div.firstElementChild
+  }
+
+  function post(path, data) {
+    var xhr = new XMLHttpRequest();
+    var parsedData = JSON.stringify(data);
+
+    const promise = new Promise(r => {
+      xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+          r(this.responseText);
+          console.log('POST', this.responseText);
+        }
+      })
+    })
+
+    xhr.open("POST", path);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(parsedData);
+
+    return promise;
+  }
+
+  function get(path) {
+    var xhr = new XMLHttpRequest();
+
+    const promise = new Promise(r => {
+      xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+          r(JSON.parse(this.responseText));
+          console.log('GET', this.responseText);
+        }
+      })
+    })
+
+    xhr.open("GET", path);
+    xhr.send();
+
+    return promise;
+  }
 </script>
 
 </html>
