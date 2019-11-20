@@ -1,10 +1,17 @@
 const chatController = require('./chatController');
 const chatAPI = require('./chatAPI');
+const path = require('path');
 
 module.exports = (server) => {
   server.get('/', function (req, res) {
     console.log('sdasdasd')
     res.send('Hello World')
+  })
+
+  server.get('/poc-chat/admin', function (req, res) {
+    res.sendFile('index.html', {
+      root: path.join(__dirname, '../'),
+    })
   })
 
   server.post('/poc-chat/webhook', function(req, res) {

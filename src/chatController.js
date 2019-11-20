@@ -7,9 +7,7 @@ const activeChannels = {
   get() {
     return this._channels;
   },
-  _channels: {
-    test: "asd"
-  },
+  _channels: {},
 };
 
 const categoryHandlers = {

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>poc-chat admin</title>
+
+  <style>
+    body { margin: 0; background: #E9EBEE; }
+  </style>
+</head>
+
+<body>
+  <form>
+    <div id="radio-container">
+      <input type="radio" id="contactChoice1" name="contact" value="email">
+      <label for="contactChoice1">Email</label>
+      <input type="radio" id="contactChoice2" name="contact" value="phone">
+      <label for="contactChoice2">Phone</label>
+      <input type="radio" id="contactChoice3" name="contact" value="mail">
+      <label for="contactChoice3">Mail</label>
+    </div>
+
+      <input type="text" name="message">
+      <button type="submit">Submit</button>
+  </form>
+</body>
+
+<script>
+init()
+
+async function init () {
+  let channels = await get("/poc-chat/channels");
+  const radioContainer = document.querySelector('#radio-container')
+
+  Object.keys(channels).map(channel => {
+    const data = channels[channel];
+
+    const ele = newEle(`
+      <input type="radio" id="user-${data.user_id}" name="channel" value="${channel}">
+      <label for="user-${data.user_id}">${data.nickname}</label>
+    `);
+
+    radioContainer.appendChild(ele)
+  })
+}
+
+
+
+function newEle (html) {
+  var div = document.createElement('div')
+  div.innerHTML = html
+  return div.firstElementChild
+}
+
+function get(path) {
+  var xhr = new XMLHttpRequest();
+
+  const promise = new Promise(r => {
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === 4) {
+        r(JSON.parse(this.responseText));
+        console.log(this.responseText);
+      }
+    })
+  })
+
+  xhr.open("GET", path);
+  xhr.send();
+
+  return promise;
+}
+</script>
+
+</html>
