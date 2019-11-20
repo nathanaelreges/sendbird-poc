@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "simple-node-logger": "^18.12.23"
+    "unirest": "^0.6.0"
   }
 }

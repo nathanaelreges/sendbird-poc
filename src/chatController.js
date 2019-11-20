@@ -1,3 +1,5 @@
+
+
 const activeChannels = {
   put(entry) {
     this._channels[entry.channelUrl] = entry;
@@ -27,7 +29,9 @@ const categoryHandlers = {
 
 module.exports = {
   handle(body) {
-    categoryHandlers[body.category](body)
+    if (categoryHandlers[body.category]) {
+      categoryHandlers[body.category](body)
+    }
   },
   getChannels() {
     return activeChannels.get()
