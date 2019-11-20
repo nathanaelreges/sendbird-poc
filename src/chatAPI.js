@@ -22,5 +22,20 @@ module.exports = {
         console.log(res.body);
       });
   },
+  getUser({ userId }) {
+    return new Promise((resolve, reject) => {
+      unirest.get(BASE_URL + '/users/' + userId)
+        .headers(headers)
+        .end(function (res) {
+          if (res.error) {
+            console.error(res.error);
+            resolve({})
+          }
+
+          resolve(res.body)
+          console.log(res.body);
+        });
+    })
+  },
 }
 
