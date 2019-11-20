@@ -37,7 +37,10 @@
 
       const ele = newEle(`<div>
         <input type="radio" id="user-${data.user_id}" name="channelUrl" value="${channel}">
-        <label for="user-${data.user_id}">${data.nickname} - ${data.lastMessage}</label>
+        <label for="user-${data.user_id}">
+          <b>Nome:</b> ${data.nickname}
+          <b>Última mensagem:</b> ${data.lastMessage}
+        </label>
       </div>`);
 
       radioContainerEl.appendChild(ele)
@@ -53,7 +56,9 @@
         return
       }
 
-      post("/poc-chat/send_message", formData)
+      post("/poc-chat/send_message", formData).then(() => {
+        resetForm(formEl);
+      })
     },
       false
     );
@@ -61,6 +66,14 @@
 
   }
 
+
+  function resetForm(formEl) {
+    const checkedInput = formEl.querySelector('input[name=channelUrl]:checked')
+    const textInput = formEl.querySelector('input[name=message]')
+
+    checkedInput.checked = false
+    textInput.value = ''
+  }
 
   function getFormData(formEl) {
     var output = {};
